@@ -1,14 +1,34 @@
-"""
-main.py - Presentation Layer untuk KelanaAI Recommendation Engine.
-Menangani interaksi pengguna (I/O) dan menampilkan hasil rekomendasi perjalanan.
+﻿"""
+main.py - KelanaAI Web Service & Recommendation Engine.
+Menyediakan endpoint API menggunakan FastAPI untuk layanan KelanaAI,
+serta fungsi CLI untuk interaksi pengguna via terminal.
 """
 
+from fastapi import FastAPI
 from services.trip_service import (
     get_trip_category,
     get_travel_season,
     calculate_daily_budget,
     get_recommended_places,
 )
+
+app = FastAPI(
+    title="KelanaAI",
+    description="Layanan web KelanaAI - Travel AI Assistant",
+    version="1.0.0",
+)
+
+
+@app.get("/api/v1/recommendations")
+def api_get_recommendations():
+    """Mengembalikan daftar rekomendasi tempat wisata."""
+    return ["Tokyo Tower", "Mount Fuji", "Shibuya"]
+
+
+@app.get("/api/v1/transportations")
+def api_get_transportations():
+    """Mengembalikan daftar pilihan moda transportasi."""
+    return ["Bus", "Train", "Flight"]
 
 
 def main():
