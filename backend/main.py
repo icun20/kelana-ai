@@ -1,16 +1,17 @@
-﻿"""
-main.py - KelanaAI Web Service & Recommendation Engine.
-Menyediakan endpoint API menggunakan FastAPI untuk layanan KelanaAI,
-serta fungsi CLI untuk interaksi pengguna via terminal.
-"""
+﻿from fastapi import FastAPI, Depends, HTTPException
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
-from fastapi import FastAPI
+from database import engine, get_db
+from models import Base, Trip
 from services.trip_service import (
     get_trip_category,
     get_travel_season,
     calculate_daily_budget,
     get_recommended_places,
 )
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="KelanaAI",
@@ -19,63 +20,120 @@ app = FastAPI(
 )
 
 
+# Pydantic schemas
+class TripCreate(BaseModel):
+    destination: str
+    days: int
+    budget: float
+
+
+class TripUpdate(BaseModel):
+    budget: float
+
+
+class TripResponse(BaseModel):
+    id: int
+    destination: str
+    days: int
+    budget: float
+    category: str
+    daily_budget: float
+
+    class Config:
+        from_attributes = True
+
+
+# Endpoint dari sesi sebelumnya
 @app.get("/api/v1/recommendations")
-def api_get_recommendations():
-    """Mengembalikan daftar rekomendasi tempat wisata."""
+def get_recommendations():
     return ["Tokyo Tower", "Mount Fuji", "Shibuya"]
 
 
 @app.get("/api/v1/transportations")
-def api_get_transportations():
-    """Mengembalikan daftar pilihan moda transportasi."""
+def get_transportations():
     return ["Bus", "Train", "Flight"]
 
 
-def main():
-    # Header
-    print("=" * 34)
-    print()
-    print("           KelanaAI")
-    print()
-    print("=" * 34)
-    print()
+# CRUD trips
+@app.post("/api/v1/trips", response_model=TripResponse)
+def create_trip(trip_data: TripCreate, db: Session = Depends(get_db)):
+    category = get_trip_category(trip_data.budget)
+    daily_budget = calculate_daily_budget(trip_data.budget, trip_data.days)
 
-    # Input dari pengguna
+    new_trip = Trip(
+        destination=trip_data.destination,
+        days=trip_data.days,
+        budget=trip_data.budget,
+        category=category,
+        daily_budget=daily_budget,
+    )
+    db.add(new_trip)
+    db.commit()
+    db.refresh(new_trip)
+    return new_trip
+
+
+@app.get("/api/v1/trips", response_model=list[TripResponse])
+def get_all_trips(db: Session = Depends(get_db)):
+    return db.query(Trip).all()
+
+
+@app.get("/api/v1/trips/{id}", response_model=TripResponse)
+def get_trip_by_id(id: int, db: Session = Depends(get_db)):
+    trip = db.query(Trip).filter(Trip.id == id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+    return trip
+
+
+@app.put("/api/v1/trips/{id}", response_model=TripResponse)
+def update_trip(id: int, trip_data: TripUpdate, db: Session = Depends(get_db)):
+    trip = db.query(Trip).filter(Trip.id == id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+
+    # update budget lalu recalculate category dan daily_budget
+    trip.budget = trip_data.budget
+    trip.category = get_trip_category(trip_data.budget)
+    trip.daily_budget = calculate_daily_budget(trip_data.budget, trip.days)
+
+    db.commit()
+    db.refresh(trip)
+    return trip
+
+
+@app.delete("/api/v1/trips/{id}")
+def delete_trip(id: int, db: Session = Depends(get_db)):
+    trip = db.query(Trip).filter(Trip.id == id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+
+    db.delete(trip)
+    db.commit()
+    return {"detail": "Trip deleted successfully"}
+
+
+if __name__ == "__main__":
+    # CLI mode
     destination = input("Enter destination: ")
     days = int(input("Enter number of days: "))
     budget = float(input("Enter budget (USD): "))
     travel_month = input("Enter travel month: ")
 
-    # Proses logika bisnis menggunakan fungsi dari trip_service
     category = get_trip_category(budget)
     daily_budget = calculate_daily_budget(budget, days)
     season = get_travel_season(travel_month)
     places = get_recommended_places(destination)
 
-    # Tampilkan hasil menggunakan f-strings
     print()
     print(f"Destination     : {destination}")
-    print()
     print(f"Days            : {days}")
-    print()
     print(f"Budget          : {int(budget)} USD")
-    print()
     print(f"Category        : {category}")
-    print()
     print(f"Daily Budget    : {int(daily_budget)} USD/Day")
-    print()
     print(f"Travel Month    : {travel_month}")
-    print()
     print(f"Season          : {season}")
     print()
-    print()
-
-    # Tampilkan rekomendasi tempat menggunakan list dan loop for
     print("Recommended Places")
-    print()
     for place in places:
         print(f"  - {place}")
-
-
-if __name__ == "__main__":
-    main()
