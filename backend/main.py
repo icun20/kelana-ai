@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from database import engine, get_db
 from models import Base, Trip
+from services.bedrock_service import generate_ai_recommendation
 from services.trip_service import (
     get_trip_category,
     get_travel_season,
@@ -20,7 +21,6 @@ app = FastAPI(
 )
 
 
-# Pydantic schemas
 class TripCreate(BaseModel):
     destination: str
     days: int
@@ -38,12 +38,12 @@ class TripResponse(BaseModel):
     budget: float
     category: str
     daily_budget: float
+    ai_recommendation: str | None = None
 
     class Config:
         from_attributes = True
 
 
-# Endpoint dari sesi sebelumnya
 @app.get("/api/v1/recommendations")
 def get_recommendations():
     return ["Tokyo Tower", "Mount Fuji", "Shibuya"]
@@ -54,7 +54,6 @@ def get_transportations():
     return ["Bus", "Train", "Flight"]
 
 
-# CRUD trips
 @app.post("/api/v1/trips", response_model=TripResponse)
 def create_trip(trip_data: TripCreate, db: Session = Depends(get_db)):
     category = get_trip_category(trip_data.budget)
@@ -92,7 +91,6 @@ def update_trip(id: int, trip_data: TripUpdate, db: Session = Depends(get_db)):
     if not trip:
         raise HTTPException(status_code=404, detail="Trip not found")
 
-    # update budget lalu recalculate category dan daily_budget
     trip.budget = trip_data.budget
     trip.category = get_trip_category(trip_data.budget)
     trip.daily_budget = calculate_daily_budget(trip_data.budget, trip.days)
@@ -112,6 +110,19 @@ def delete_trip(id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"detail": "Trip deleted successfully"}
 
+
+
+@app.post("/api/v1/trips/{id}/generate", response_model=TripResponse)
+def generate_trip_recommendation(id: int, db: Session = Depends(get_db)):
+    trip = db.query(Trip).filter(Trip.id == id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+    
+    recommendation = generate_ai_recommendation(trip.destination, trip.days)
+    trip.ai_recommendation = recommendation
+    db.commit()
+    db.refresh(trip)
+    return trip
 
 if __name__ == "__main__":
     # CLI mode
