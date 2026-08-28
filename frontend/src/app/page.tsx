@@ -1,4 +1,6 @@
-﻿export default function Home() {
+﻿import Link from 'next/link';
+
+export default function Home() {
   return (
     <div className="text-slate-800 antialiased min-h-screen flex flex-col font-sans bg-[#f1f5f9]">
       <style>{`
@@ -24,17 +26,15 @@
         .bg-amber { background-color: #f59e0b; }
         .border-carbon { border-color: #1e293b; }
       `}</style>
-      {/* Inject HTML converted to JSX */}
-      
 
         <header className="bevel-plate-dark p-4 flex flex-col md:flex-row justify-between items-center">
         <h1 className="text-2xl font-bold tracking-tight text-white mb-2 md:mb-0">
             <span className="text-nav-gold">KELANA</span>AI
         </h1>
         <nav className="flex gap-4 uppercase text-xs font-bold tracking-wider">
-            <a href="#" className="text-nav-gold hover:text-amber">Home</a>
-            <a href="#" className="text-gray-300 hover:text-white">Destinations</a>
-            <a href="#" className="text-gray-300 hover:text-white">About</a>
+            <Link href="/" className="text-nav-gold hover:text-amber">Home</Link>
+            <Link href="/dashboard" className="text-gray-300 hover:text-white">Destinations</Link>
+            <Link href="#" className="text-gray-300 hover:text-white">About</Link>
         </nav>
     </header>
 
@@ -74,9 +74,9 @@
                     <input type="number" id="budget" placeholder="1000" min="1" className="p-2 border-2 border-slate-400 bg-slate-50 focus:outline-none focus:border-carbon rounded-none" />
                 </div>
 
-                <button type="button" className="w-full md:w-auto bg-signal hover:bg-red-600 text-white font-bold uppercase text-sm py-2 px-6 border-2 border-red-800 shadow-[2px_2px_0px_#7f1d1d] active:shadow-none active:translate-y-0.5 active:translate-x-0.5 transition-all">
+                <Link href="/dashboard" className="w-full md:w-auto bg-signal hover:bg-red-600 text-white font-bold uppercase text-sm py-2 px-6 border-2 border-red-800 shadow-[2px_2px_0px_#7f1d1d] active:shadow-none active:translate-y-0.5 active:translate-x-0.5 transition-all text-center">
                     Generate
-                </button>
+                </Link>
             </form>
         </section>
 
