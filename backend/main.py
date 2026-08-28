@@ -15,18 +15,18 @@ from services.trip_service import (
 
 Base.metadata.create_all(bind=engine)
 
+app = FastAPI(
+    title="KelanaAI",
+    description="Layanan web KelanaAI - Travel AI Assistant",
+    version="1.0.0",
+)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*'],
-)
-
-app = FastAPI(
-    title="KelanaAI",
-    description="Layanan web KelanaAI - Travel AI Assistant",
-    version="1.0.0",
 )
 
 
@@ -157,5 +157,3 @@ if __name__ == "__main__":
     print("Recommended Places")
     for place in places:
         print(f"  - {place}")
-
-
