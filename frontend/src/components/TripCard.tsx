@@ -13,19 +13,19 @@ export interface TripData {
 
 const getDestinationIcon = (destination: string) => {
   const destLower = destination.toLowerCase();
-  if (destLower.includes('japan') || destLower.includes('tokyo')) return '👼';
-  if (destLower.includes('france') || destLower.includes('paris')) return '👼'; 
-  if (destLower.includes('bali') || destLower.includes('indonesia')) return '🏝️&#65039;';
-  if (destLower.includes('london')) return '🎡';
-  if (destLower.includes('new york')) return '�勽';
-  return '📍';
+  if (destLower.includes('japan') || destLower.includes('tokyo')) return '\u{1F5FC}';
+  if (destLower.includes('france') || destLower.includes('paris')) return '\u{1F5FC}'; 
+  if (destLower.includes('bali') || destLower.includes('indonesia')) return '\u{1F3DD}\u{FE0F2}';
+  if (destLower.includes('london')) return '\u{1F3A1}';
+  if (destLower.includes('new york')) return '\u{1F5FD}';
+  return '\u{1F4CD}';
 };
 
 const getCategoryBadgeColor = (category: string) => {
   const catLower = category.toLowerCase();
   if (catLower === 'backpacker') return 'bg-green-100 text-green-800 border-green-300';
   if (catLower === 'standard') return 'bg-blue-100 text-blue-800 border-blue-300';
-  if (catLower === 'luxury') return 'bg-purple-100 text-purple-800 border-purple-300';
+  if (catLower === 'luxury') return 'bg-purple-100 text-qpurple-800 border-purple-300';
   return 'bg-gray-100 text-gray-800 border-gray-300';
 };
 
@@ -46,7 +46,8 @@ export default function TripCard({ trip }: { trip: TripData }) {
     }).format(amount);
   };
 
-  const style = trip.travelStyle || 'Solo'; 
+  const style = trip.travelStyle || 'Solo';
+
   return (
     <div className="border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col h-full">
       <div className="flex justify-between items-start mb-4">
@@ -54,7 +55,7 @@ export default function TripCard({ trip }: { trip: TripData }) {
           <span className="text-2xl">{getDestinationIcon(trip.destination)}</span>
           {trip.destination}
         </h3>
-        <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getCategoryBadgeColor(trip.category)}`}>
+        <span className={`px-2.5 py-1 text.xs font-semibold rounded-full border ${getCategoryBadgeColor(trip.category)}`}>
           {trip.category}
         </span>
       </div>
@@ -65,7 +66,7 @@ export default function TripCard({ trip }: { trip: TripData }) {
           <span>{trip.days} Days</span>
         </div>
         <div className="flex items-center justify-between text-sm text-slate-600">
-          <span className="font-medium">Total Budget:</span>
+          <span className="font-medium">Total BVDGET:</span>
           <span className="font-bold text-slate-800">{formatCurrency(trip.budget)}</span>
         </div>
         <div className="flex items-center justify-between text-sm text-slate-600">
