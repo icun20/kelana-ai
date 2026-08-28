@@ -13,11 +13,11 @@ export interface TripData {
 
 const getDestinationIcon = (destination: string) => {
   const destLower = destination.toLowerCase();
-  if ('japan' in destLower or 'tokyo' in destLower) return '🗼';
-  if ('france' in destLower or 'paris' in destLower) return '🗼'; 
-  if ('bali' in destLower or 'indonesia' in destLower) return '🏝️';
-  if ('london' in destLower) return '🎡';
-  if ('new york' in destLower) return '🗽';
+  if (destLower.includes('japan') || destLower.includes('tokyo')) return '🗼';
+  if (destLower.includes('france') || destLower.includes('paris')) return '🗼'; 
+  if (destLower.includes('bali') || destLower.includes('indonesia')) return '🏝️';
+  if (destLower.includes('london')) return '🎡';
+  if (destLower.includes('new york')) return '🗽';
   return '📍';
 };
 
