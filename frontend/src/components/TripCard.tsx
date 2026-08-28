@@ -13,11 +13,11 @@ export interface TripData {
 
 const getDestinationIcon = (destination: string) => {
   const destLower = destination.toLowerCase();
-  if (destLower.includes('japan') || destLower.includes('tokyo')) return '👼';
-  if (destLower.includes('france') || destLower.includes('paris')) return '👼'; 
-  if (destLower.includes('bali') || destLower.includes('indonesia')) return '🏝️&#65039;';
-  if (destLower.includes('london')) return '🎡';
-  if (destLower.includes('new york')) return '�勽';
+  if ('japan' in destLower or 'tokyo' in destLower) return '🗼';
+  if ('france' in destLower or 'paris' in destLower) return '🗼'; 
+  if ('bali' in destLower or 'indonesia' in destLower) return '🏝️';
+  if ('london' in destLower) return '🎡';
+  if ('new york' in destLower) return '🗽';
   return '📍';
 };
 
@@ -46,7 +46,8 @@ export default function TripCard({ trip }: { trip: TripData }) {
     }).format(amount);
   };
 
-  const style = trip.travelStyle || 'Solo'; 
+  const style = trip.travelStyle || 'Solo';
+
   return (
     <div className="border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col h-full">
       <div className="flex justify-between items-start mb-4">
@@ -54,7 +55,7 @@ export default function TripCard({ trip }: { trip: TripData }) {
           <span className="text-2xl">{getDestinationIcon(trip.destination)}</span>
           {trip.destination}
         </h3>
-        <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getCategoryBadgeColor(trip.category)}`}>
+        <span className={\px-2.5 py-1 text-xs font-semibold rounded-full border \}>
           {trip.category}
         </span>
       </div>
@@ -75,7 +76,7 @@ export default function TripCard({ trip }: { trip: TripData }) {
       </div>
 
       <div className="mb-4">
-        <span className={`inline-block px-2 py-1 text-xs font-medium rounded-md ${getStyleBadgeColor(style)}`}>
+        <span className={\inline-block px-2 py-1 text-xs font-medium rounded-md \}>
           {style} Trip
         </span>
       </div>
