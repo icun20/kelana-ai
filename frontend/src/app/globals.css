@@ -1,8 +1,8 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc; /* slate-50 for a cleaner look */
+  --foreground: #0f172a; /* slate-900 */
 }
 
 @theme inline {
@@ -23,4 +23,35 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Premium Neo-Brutalism inspired elements for KelanaAI */
+.bevel-plate {
+    @apply bg-slate-100 border-2 border-white rounded-2xl shadow-sm;
+    border-right-color: #cbd5e1;
+    border-bottom-color: #cbd5e1;
+}
+
+.bevel-plate-dark {
+    @apply bg-slate-900 text-white rounded-b-2xl shadow-md;
+}
+
+.text-nav-gold {
+    @apply text-amber-400;
+}
+
+.bg-signal {
+    @apply bg-rose-600;
+}
+
+.bg-carbon {
+    @apply bg-slate-800;
+}
+
+.bg-amber {
+    @apply bg-amber-500;
+}
+
+.border-carbon {
+    @apply border-slate-800;
 }

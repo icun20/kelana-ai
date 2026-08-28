@@ -1,4 +1,6 @@
-﻿from fastapi import FastAPI, Depends, HTTPException
+﻿from dotenv import load_dotenv
+load_dotenv()
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -157,3 +159,4 @@ if __name__ == "__main__":
     print("Recommended Places")
     for place in places:
         print(f"  - {place}")
+

@@ -13,30 +13,32 @@ export interface TripData {
   travelStyle?: string;
 }
 
+const DESTINATION_ICONS: Record<string, string> = {
+  japan: '🗼', tokyo: '🗼',
+  france: '🗼', paris: '🗼',
+  bali: '🏝️', indonesia: '🏝️',
+  london: '🎡', uk: '🎡',
+  'new york': '🗽', usa: '🗽',
+};
+
 const getDestinationIcon = (destination: string) => {
   const destLower = destination.toLowerCase();
-  if (destLower.includes('japan') || destLower.includes('tokyo')) return '\u{1F5FC}';
-  if (destLower.includes('france') || destLower.includes('paris')) return '\u{1F5FC}'; 
-  if (destLower.includes('bali') || destLower.includes('indonesia')) return '\u{1F3DD}\u{FE0F2}';
-  if (destLower.includes('london')) return '\u{1F3A1}';
-  if (destLower.includes('new york')) return '\u{1F5FD}';
-  return '\u{1F4CD}';
+  for (const [key, icon] of Object.entries(DESTINATION_ICONS)) {
+    if (destLower.includes(key)) return icon;
+  }
+  return '📍';
 };
 
-const getCategoryBadgeColor = (category: string) => {
-  const catLower = category.toLowerCase();
-  if (catLower === 'backpacker') return 'bg-green-100 text-green-800 border-green-300';
-  if (catLower === 'standard') return 'bg-blue-100 text-blue-800 border-blue-300';
-  if (catLower === 'luxury') return 'bg-purple-100 text-purple-800 border-purple-300';
-  return 'bg-gray-100 text-gray-800 border-gray-300';
+const CATEGORY_STYLES: Record<string, string> = {
+  backpacker: 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
+  standard: 'bg-blue-50 text-blue-700 ring-blue-600/20',
+  luxury: 'bg-purple-50 text-purple-700 ring-purple-600/20',
 };
 
-const getStyleBadgeColor = (style: string) => {
-  const styleLower = style.toLowerCase();
-  if (styleLower === 'family') return 'bg-orange-100 text-orange-800';
-  if (styleLower === 'solo') return 'bg-teal-100 text-teal-800';
-  if (styleLower === 'couple') return 'bg-pink-100 text-pink-800';
-  return 'bg-gray-100 text-gray-800';
+const STYLE_STYLES: Record<string, string> = {
+  family: 'bg-amber-50 text-amber-700 ring-amber-600/20',
+  solo: 'bg-cyan-50 text-cyan-700 ring-cyan-600/20',
+  couple: 'bg-rose-50 text-rose-700 ring-rose-600/20',
 };
 
 export default function TripCard({ trip }: { trip: TripData }) {
@@ -51,7 +53,9 @@ export default function TripCard({ trip }: { trip: TripData }) {
     }).format(amount);
   };
 
-  const style = trip.travelStyle || 'Solo';
+  const travelStyle = trip.travelStyle || 'Solo';
+  const categoryStyle = CATEGORY_STYLES[trip.category.toLowerCase()] || 'bg-gray-50 text-gray-700 ring-gray-600/20';
+  const travelStyleColor = STYLE_STYLES[travelStyle.toLowerCase()] || 'bg-gray-50 text-gray-700 ring-gray-600/20';
 
   const handleGenerateAI = async () => {
     setLoading(true);
@@ -63,60 +67,77 @@ export default function TripCard({ trip }: { trip: TripData }) {
         const data = await response.json();
         setAiRec(data.ai_recommendation);
       } else {
-        alert("Failed to generate AI recommendation. Is AWS Bedrock configured?");
+        alert("Failed to generate itinerary. Check backend logs.");
       }
     } catch (error) {
-      alert("Error generating recommendation: " + error);
+      alert("Network error: " + error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col h-full">
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-          <span className="text-2xl">{getDestinationIcon(trip.destination)}</span>
-          {trip.destination}
-        </h3>
-        <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getCategoryBadgeColor(trip.category)}`}>
-          {trip.category}
-        </span>
-      </div>
-
-      <div className="space-y-2 mb-4 flex-grow">
-        <div className="flex items-center justify-between text-sm text-slate-600">
-          <span className="font-medium">Duration:</span>
-          <span>{trip.days} Days</span>
-        </div>
-        <div className="flex items-center justify-between text-sm text-slate-600">
-          <span className="font-medium">Total Budget:</span>
-          <span className="font-bold text-slate-800">{formatCurrency(trip.budget)}</span>
-        </div>
-        <div className="flex items-center justify-between text-sm text-slate-600">
-          <span className="font-medium">Daily Budget:</span>
-          <span>{formatCurrency(trip.daily_budget)} / day</span>
+    <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100">
+      
+      {/* Header section */}
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            <span className="text-2xl" role="img" aria-label="icon">
+              {getDestinationIcon(trip.destination)}
+            </span>
+            {trip.destination}
+          </h3>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${categoryStyle}`}>
+              {trip.category}
+            </span>
+            <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${travelStyleColor}`}>
+              {travelStyle}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="mb-4">
-        <span className={`inline-block px-2 py-1 text-xs font-medium rounded-md ${getStyleBadgeColor(style)}`}>
-          {style} Trip
-        </span>
+      {/* Details section */}
+      <div className="mb-6 space-y-3 flex-grow border-y border-slate-50 py-4">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-slate-500">Duration</span>
+          <span className="font-semibold text-slate-700">{trip.days} Days</span>
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-slate-500">Total Budget</span>
+          <span className="font-semibold text-slate-900">{formatCurrency(trip.budget)}</span>
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-slate-500">Daily Average</span>
+          <span className="font-semibold text-slate-700">{formatCurrency(trip.daily_budget)} / day</span>
+        </div>
       </div>
 
-      <div className="mt-auto pt-4 border-t border-slate-100">
+      {/* Footer / AI section */}
+      <div className="mt-auto">
         {aiRec ? (
-          <p className="text-xs text-slate-500 italic">
-            "{aiRec}"
-          </p>
+          <div className="rounded-xl bg-slate-50 p-4 border border-slate-100 relative">
+            <div className="absolute -top-2 -left-1 text-xl">✨</div>
+            <p className="text-sm text-slate-600 italic leading-relaxed line-clamp-4 relative z-10 pl-2">
+              {aiRec}
+            </p>
+          </div>
         ) : (
           <button 
             onClick={handleGenerateAI}
             disabled={loading}
-            className="w-full text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 py-2 rounded-md transition-colors disabled:opacity-50"
+            className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2"
           >
-            {loading ? 'Generating...' : '✨ Generate AI Recommendation'}
+            {loading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                Processing...
+              </>
+            ) : (
+              '✨ Generate AI Itinerary'
+            )}
           </button>
         )}
       </div>
