@@ -1,4 +1,5 @@
 ﻿from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -13,6 +14,14 @@ from services.trip_service import (
 )
 
 Base.metadata.create_all(bind=engine)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 app = FastAPI(
     title="KelanaAI",
@@ -148,3 +157,5 @@ if __name__ == "__main__":
     print("Recommended Places")
     for place in places:
         print(f"  - {place}")
+
+

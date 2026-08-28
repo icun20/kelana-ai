@@ -1,4 +1,6 @@
-import React from 'react';
+﻿"use client";
+
+import React, { useState } from 'react';
 
 export interface TripData {
   id: number;
@@ -25,7 +27,7 @@ const getCategoryBadgeColor = (category: string) => {
   const catLower = category.toLowerCase();
   if (catLower === 'backpacker') return 'bg-green-100 text-green-800 border-green-300';
   if (catLower === 'standard') return 'bg-blue-100 text-blue-800 border-blue-300';
-  if (catLower === 'luxury') return 'bg-purple-100 text-qpurple-800 border-purple-300';
+  if (catLower === 'luxury') return 'bg-purple-100 text-purple-800 border-purple-300';
   return 'bg-gray-100 text-gray-800 border-gray-300';
 };
 
@@ -38,6 +40,9 @@ const getStyleBadgeColor = (style: string) => {
 };
 
 export default function TripCard({ trip }: { trip: TripData }) {
+  const [aiRec, setAiRec] = useState<string | undefined>(trip.ai_recommendation);
+  const [loading, setLoading] = useState(false);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -48,6 +53,25 @@ export default function TripCard({ trip }: { trip: TripData }) {
 
   const style = trip.travelStyle || 'Solo';
 
+  const handleGenerateAI = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8000/api/v1/trips/${trip.id}/generate`, {
+        method: "POST"
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAiRec(data.ai_recommendation);
+      } else {
+        alert("Failed to generate AI recommendation. Is AWS Bedrock configured?");
+      }
+    } catch (error) {
+      alert("Error generating recommendation: " + error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="border border-slate-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col h-full">
       <div className="flex justify-between items-start mb-4">
@@ -55,7 +79,7 @@ export default function TripCard({ trip }: { trip: TripData }) {
           <span className="text-2xl">{getDestinationIcon(trip.destination)}</span>
           {trip.destination}
         </h3>
-        <span className={`px-2.5 py-1 text.xs font-semibold rounded-full border ${getCategoryBadgeColor(trip.category)}`}>
+        <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getCategoryBadgeColor(trip.category)}`}>
           {trip.category}
         </span>
       </div>
@@ -66,7 +90,7 @@ export default function TripCard({ trip }: { trip: TripData }) {
           <span>{trip.days} Days</span>
         </div>
         <div className="flex items-center justify-between text-sm text-slate-600">
-          <span className="font-medium">Total BVDGET:</span>
+          <span className="font-medium">Total Budget:</span>
           <span className="font-bold text-slate-800">{formatCurrency(trip.budget)}</span>
         </div>
         <div className="flex items-center justify-between text-sm text-slate-600">
@@ -81,13 +105,21 @@ export default function TripCard({ trip }: { trip: TripData }) {
         </span>
       </div>
 
-      {trip.ai_recommendation && (
-        <div className="mt-auto pt-4 border-t border-slate-100">
-          <p className="text-xs text-slate-500 line-clamp-3 italic">
-            "{trip.ai_recommendation}"
+      <div className="mt-auto pt-4 border-t border-slate-100">
+        {aiRec ? (
+          <p className="text-xs text-slate-500 italic">
+            "{aiRec}"
           </p>
-        </div>
-      )}
+        ) : (
+          <button 
+            onClick={handleGenerateAI}
+            disabled={loading}
+            className="w-full text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 py-2 rounded-md transition-colors disabled:opacity-50"
+          >
+            {loading ? 'Generating...' : '✨ Generate AI Recommendation'}
+          </button>
+        )}
+      </div>
     </div>
   );
 }
