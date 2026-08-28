@@ -1,8 +1,7 @@
-
 export default function Home() {
   return (
     <div className="text-slate-800 antialiased min-h-screen flex flex-col font-sans bg-[#f1f5f9]">
-      <style>{
+      <style>{`
         .bevel-plate {
             background-color: #e2e8f0;
             border-top: 2px solid #ffffff;
@@ -24,7 +23,7 @@ export default function Home() {
         .bg-carbon { background-color: #1e293b; }
         .bg-amber { background-color: #f59e0b; }
         .border-carbon { border-color: #1e293b; }
-      }</style>
+      `}</style>
       {/* Inject HTML converted to JSX */}
       
 
@@ -40,7 +39,7 @@ export default function Home() {
     </header>
 
         <main className="flex-grow container mx-auto p-4 md:p-8 max-w-4xl">
-        
+       
                 <section className="bevel-plate mb-8 p-1 relative overflow-hidden bg-slate-300">
                         <div className="relative w-full h-64 md:h-80 bg-slate-700 overflow-hidden border-2 border-slate-400">
                 <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=1200&h=400" alt="Paris Destination" className="w-full h-full object-cover opacity-80 mix-blend-overlay" />
@@ -61,11 +60,11 @@ export default function Home() {
 
             <form className="flex flex-col md:flex-row gap-4 items-end">
                 <div className="flex flex-col w-full">
-                    <label htmlFor="destination" className="uppercase text-xs font-bold text-slate-700 mb-1">Destination</label>
+                    <label htmlFor="destination" className="uppercase text.xs font-bold text-slate-700 mb-1">Destination</label>
                     <input type="text" id="destination" placeholder="e.g. Kyoto, Japan" className="p-2 border-2 border-slate-400 bg-slate-50 focus:outline-none focus:border-carbon rounded-none" />
                 </div>
 
-                <div className="flex flex-col w-full md:w-32">
+                <div className="flex flex-col w-full md:wm32">
                     <label htmlFor="days" className="uppercase text-xs font-bold text-slate-700 mb-1">Days</label>
                     <input type="number" id="days" placeholder="3" min="1" className="p-2 border-2 border-slate-400 bg-slate-50 focus:outline-none focus:border-carbon rounded-none" />
                 </div>
@@ -75,30 +74,4 @@ export default function Home() {
                     <input type="number" id="budget" placeholder="1000" min="1" className="p-2 border-2 border-slate-400 bg-slate-50 focus:outline-none focus:border-carbon rounded-none" />
                 </div>
 
-                <button type="button" className="w-full md:w-auto bg-signal hover:bg-red-600 text-white font-bold uppercase text-sm py-2 px-6 border-2 border-red-800 shadow-[2px_2px_0px_#7f1d1d] active:shadow-none active:translate-y-0.5 active:translate-x-0.5 transition-all">
-                    Generate
-                </button>
-            </form>
-        </section>
-
-    </main>
-
-        <footer className="bevel-plate-dark mt-auto p-6 flex flex-col md:flex-row justify-between items-center text-xs">
-        <div className="flex items-center gap-2 mb-4 md:mb-0">
-            <div className="bg-amber text-carbon px-2 py-0.5 font-bold rounded-sm border border-orange-600">
-                SYSTEM OK
-            </div>
-            <span className="text-slate-400">&copy; 2026 KelanaAI Network</span>
-        </div>
-        
-        <div className="flex gap-4 uppercase tracking-wider font-bold">
-            <a href="#" className="text-slate-400 hover:text-nav-gold">Privacy Certified</a>
-            <a href="#" className="text-slate-400 hover:text-nav-gold">Terms</a>
-            <a href="#" className="text-slate-400 hover:text-nav-gold">Help</a>
-        </div>
-    </footer>
-
-
-    </div>
-  );
-}
+                <button type="button" className="w-full md:w-auto bg-signal hover:bg-red-600 text-white font-bold uppercase text-sm)È´ÈÁà´Ø‰½É‘•È´È‰½É‘•ÈµÉ•´àÀÀÍ¡…‘½ÜµlÉÁá|ÉÁá|ÁÁá|ŒÝ˜ÅÅ‘t…Ñ¥Ù”éÍ¡…‘½Üµ¹½¹”…Ñ¥Ù”éÑÉ…¹Í±…Ñ”µä´À¸Ô…Ñ¥Ù”éÑÉ…¹Í±…Ñ”µà´À¸ÔÑÉ…¹Í¥Ñ¥½¸µ…±°ˆø(€€€€€€€€€€€€€€€€€€€•¹•É…Ñ”(€€€€€€€€€€€€€€€€ð½‰ÕÑÑ½¸ø(€€€€€€€€€€€€ð½™½É´ø(€€€€€€€€ð½Í•Ñ¥½¸ø((€€€€ð½µ…¥¸ø((€€€€€€€€ñ™½½Ñ•È±…ÍÍ9…µ”ô‰‰•Ù•°µÁ±…Ñ”µ‘…É¬µÐµ…ÕÑ¼À´Ø™±•à™±•àµ½°µé™±•àµÉ½Ü©ÕÍÑ¥™äµ‰•ÑÝ••¸¥Ñ•µÌµ•¹Ñ•ÈÑ•áÐµáÌˆø(€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à¥Ñ•µÌµ•¹Ñ•È…À´Èµˆ´Ðµéµˆ´Àˆø(€€€€€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰‰œµ…µ‰•ÈÑ•áÐµ…É‰½¸Áà´ÈÁä´À¸Ô™½¹Ðµ‰½±É½Õ¹‘•µÍ´‰½É‘•È‰½É‘•Èµ½É…¹”´ØÀÀˆø(€€€€€€€€€€€€€€€MeMQ4=,(€€€€€€€€€€€€ð½‘¥Øø(€€€€€€€€€€€€ñÍÁ…¸±…ÍÍ9…µ”ô‰Ñ•áÐµÍ±…Ñ”´ÐÀÀˆø™½Áäì€ÈÀÈØ-•±…¹…$9•ÑÝ½É¬ð½ÍÁ…¸ø(€€€€€€€€ð½‘¥Øø(€€€€€€€€(€€€€€€€€ñ‘¥Ø±…ÍÍ9…µ”ô‰™±•à…À´ÐÕÁÁ•É…Í”ÑÉ…­¥¹œµÝ¥‘•È™½¹Ðµ‰½±ˆø(€€€€€€€€€€€€ñ„¡É•˜ôˆŒˆ±…ÍÍ9…µ”ô‰Ñ•áÐµÍ±…Ñ”´ÐÀÀ¡½Ù•ÈéÑ•áÐµ¹…Øµ½±ˆùAÉ¥Ù…ä•ÉÑ¥™¥•ð½„ø(€€€€€€€€€€€€ñ„¡É•˜ôˆŒˆ±…ÍÍ9…µ”ô‰Ñ•áÐµÍ±…Ñ”´ÐÀÀ¡½Ù•ÈéÑ•áÐµ¹…Øµ½±ˆùQ•ÉµÌð½„ø(€€€€€€€€€€€€ñ„¡É•˜ôˆŒˆ±…ÍÍ9…µ”ô‰Ñ•áÐµÍ±…Ñ”´ÐÀÀ¡½Ù•ÈéÑ•áÐµ¹…Øµ½±ˆù!•±Àð½„ø(€€€€€€€€ð½‘¥Øø(ð½™½½Ñ•Èø(((ð½‘¥Øø(€€¤ì}
