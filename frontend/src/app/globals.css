@@ -1,57 +1,25 @@
-﻿@import "tailwindcss";
-
-:root {
-  --background: #f8fafc; /* slate-50 for a cleaner look */
-  --foreground: #0f172a; /* slate-900 */
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
+﻿html, body {
+  margin: 0;
+  padding: 0;
+  background: #f8fafc;
+  color: #0f172a;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Premium Neo-Brutalism inspired elements for KelanaAI */
-.bevel-plate {
-    @apply bg-slate-100 border-2 border-white rounded-2xl shadow-sm;
-    border-right-color: #cbd5e1;
-    border-bottom-color: #cbd5e1;
+* {
+  box-sizing: border-box;
 }
 
-.bevel-plate-dark {
-    @apply bg-slate-900 text-white rounded-b-2xl shadow-md;
+body {
+  min-height: 100vh;
 }
 
-.text-nav-gold {
-    @apply text-amber-400;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-.bg-signal {
-    @apply bg-rose-600;
+button, input {
+  font: inherit;
 }
 
-.bg-carbon {
-    @apply bg-slate-800;
-}
-
-.bg-amber {
-    @apply bg-amber-500;
-}
-
-.border-carbon {
-    @apply border-slate-800;
-}
