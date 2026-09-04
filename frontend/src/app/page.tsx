@@ -169,7 +169,7 @@ function PlannerPageContent() {
       </main>
 
       <footer className="py-6 text-center text-sm text-slate-400 border-t border-slate-200 bg-white">
-        &copy; {new Date().getFullYear()} KelanaAI Network. Designed for elegant travel planning.
+        &copy; {new Date().getFullYear()} KelanaAI Network. Designed by Icun.
       </footer>
     </div>
   );

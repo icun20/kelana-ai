@@ -11,8 +11,8 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from database import engine, get_db
-from models import Base, Trip, User
-from services.bedrock_service import generate_ai_recommendation
+from models import Base, Trip, User, Message
+from services.bedrock_service import generate_ai_recommendation, generate_chat_response
 from services.trip_service import (
     calculate_daily_budget,
     get_recommended_places,
@@ -42,6 +42,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+
+class MessageCreate(BaseModel):
+    content: str
+
+class MessageResponse(BaseModel):
+    id: int
+    role: str
+    content: str
+    created_at: str
+
+    class Config:
+        from_attributes = True
 
 class UserCreate(BaseModel):
     name: str
@@ -292,6 +305,53 @@ def generate_trip_recommendation(
     db.refresh(trip)
     return trip
 
+
+
+@app.get("/api/v1/trips/{id}/chat", response_model=list[MessageResponse])
+def get_trip_chat(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    trip = db.query(Trip).filter(Trip.id == id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+    if trip.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="You do not own this trip")
+    
+    return db.query(Message).filter(Message.trip_id == trip.id).order_by(Message.id.asc()).all()
+
+@app.post("/api/v1/trips/{id}/chat", response_model=MessageResponse)
+def create_trip_chat(
+    id: int,
+    message_data: MessageCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    trip = db.query(Trip).filter(Trip.id == id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Trip not found")
+    if trip.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="You do not own this trip")
+    
+    now = datetime.now().isoformat()
+    user_msg = Message(trip_id=trip.id, role="user", content=message_data.content, created_at=now)
+    db.add(user_msg)
+    db.commit()
+    
+    db.refresh(user_msg)
+    
+    # Fetch history up to this point (excluding the new user msg we just saved)
+    history = db.query(Message).filter(Message.trip_id == trip.id, Message.id < user_msg.id).order_by(Message.id.asc()).all()
+    
+    # Generate AI response via Bedrock
+    ai_content = generate_chat_response(history, message_data.content, trip.destination)
+    ai_msg = Message(trip_id=trip.id, role="assistant", content=ai_content, created_at=datetime.now().isoformat())
+    db.add(ai_msg)
+    db.commit()
+    db.refresh(ai_msg)
+    
+    return ai_msg
 
 if __name__ == "__main__":
     destination = input("Enter destination: ")
